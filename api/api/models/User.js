@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 const bcryptService = require('../services/bcrypt.service');
 
-const sequelize = require('../../config/database');
+const databases = require('../../config/databases');
+
+const sequelize = databases.accountManager;
 
 const hooks = {
   beforeCreate(user) {
@@ -15,10 +17,25 @@ const User = sequelize.define('User', {
   email: {
     type: Sequelize.STRING,
     unique: true,
+    allowNull:false,
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     type: Sequelize.STRING,
+    allowNull:false
   },
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    allowNull:false
+  },
+  isBanned: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    allowNull:false
+  }
 }, { hooks, tableName });
 
 // eslint-disable-next-line

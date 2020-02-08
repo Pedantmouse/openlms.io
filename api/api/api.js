@@ -1,6 +1,7 @@
 /**
  * third party libraries
  */
+const dotenv = require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const helmet = require('helmet');
@@ -12,6 +13,7 @@ const cors = require('cors');
  */
 const dbService = require('./services/db.service');
 const auth = require('./policies/auth.policy');
+
 
 /**
  * controllers
@@ -27,9 +29,12 @@ const environment = process.env.NODE_ENV;
 /**
  * express application
  */
+const databases = require('../config/databases');
+
+
 const app = express();
 const server = http.Server(app);
-const DB = dbService(environment, false).start();
+const DB = dbService(true).start();
 
 // allow cross origin requests
 // configure to only allow requests from certain origins

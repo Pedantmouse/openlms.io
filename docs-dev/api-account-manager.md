@@ -28,19 +28,18 @@ schema
 | Name | Type | Description |
 |---|---|---|
 | token | string | The token the user will use for subsequent request. |
-| refresh | string | Time when the token will expire. |
-| user_id | number | |
+| tokenIssuedDate | string | In utc time. |
+| tokenExpiredDate | string | In utc time. |
+| userId | number | |
 
 
 
 ```json
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTgxMTU1MTM3LCJleHAiOjE1ODExNjU5Mzd9.tIs_PdW2TN8xVoW8Tz4wSNaEKL4BIRweL1-isJQOz1A",
-    "user": {
-        "id": 1,
-        "updatedAt": "2020-02-08T09:45:37.363Z",
-        "createdAt": "2020-02-08T09:45:37.363Z"
-    }
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTgxMTk4MDcwLCJleHAiOjE1ODEyNTgwNzB9.-doO4Ff_E_P70CGpplDYqRha9h6lz62glxJLTZGcE4I",
+    "tokenIssuedDate": "Sat, 08 Feb 2020 21:41:10 GMT",
+    "tokenExpiredDate": "Sat, 08 Feb 2020 21:42:10 GMT",
+    "userId": 1
 }
 ```
 

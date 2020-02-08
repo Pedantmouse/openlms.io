@@ -4,29 +4,38 @@ const bcryptService = require('../services/bcrypt.service');
 
 exports.register = async (req, res) => {
   const { body } = req;
-  // console.log(body);
 
-  if (body.password !== undefined && body.password !== null && body.password !== "" && body.password === body.password2) {
-    try {
-      const user = await User.create({
-        email: body.email,
-        password: body.password,
-      });
-      const tokenResult = authService.issue({ id: user.id });
-
-      return res.status(200).json({ 
-        token: tokenResult.token,
-        tokenIssuedDate: tokenResult.tokenIssuedDate,
-        tokenExpiredDate: tokenResult.tokenExpiredDate,
-        user_id: user.id
-       });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ msg: 'Internal server error' });
-    }
+  if (body.password === undefined || body.password === null) {
+    return res.status(400).json({ 
+      msg: 'Bad Request: Password is missing.', 
+      humanMsg: 'Please enter a password for your account' 
+    });
   }
 
-  return res.status(400).json({ msg: 'Bad Request: Passwords don\'t match' });
+  if (body.password.length < 6) {
+    return res.status(400).json({ 
+      msg: 'Bad Request: Password is missing.',
+      humanMsg: 'Your password needs to be at least 6 letters.' 
+    });
+  }
+
+  try {
+    const user = await User.create({
+      email: body.email,
+      password: body.password,
+    });
+    const tokenResult = authService.issue({ id: user.id });
+
+    return res.status(200).json({ 
+      token: tokenResult.token,
+      tokenIssuedDate: tokenResult.tokenIssuedDate,
+      tokenExpiredDate: tokenResult.tokenExpiredDate,
+      userId: user.id
+      });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
 };
 
 exports.login = async (req, res) => {
