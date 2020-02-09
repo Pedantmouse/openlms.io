@@ -73,30 +73,64 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (email && password) {
-    try {
-      const user = await User
-        .findOne({
-          where: {
-            email,
-          },
-        });
-
-      if (!user) {
-        return res.status(400).json({ msg: 'Bad Request: User not found' });
-      }
-
-      if (bcryptService().comparePassword(password, user.password)) {
-        const token = authService.issue({ id: user.id });
-
-        return res.status(200).json({ token, user });
-      }
-
-      return res.status(401).json({ msg: 'Unauthorized' });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ msg: 'Internal server error' });
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Email and password required.', 
+        humanMsg: 'Please enter your account information' 
+      });
     }
+  
+
+    console.log("email", email)
+    const user = await User
+      .findOne({
+        where: {
+          email
+        },
+      });
+
+
+    if (!user) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: User not found',
+        humanMsg: 'No account exist with this email.'
+      });
+    }
+  
+
+    if (user.isBanned) {
+      return res.status(403).json({ 
+        msg: 'Forbidden: User has been banned.',
+        humanMsg: 'This account is suspended.'
+      });
+    }
+
+    if (user.isDisabled) {
+      return res.status(401).json({ 
+        msg: 'Unauthorized: User account is disabled.',
+        humanMsg: 'This account is disabled.',
+        resolve: '/api/v1/reactivate/email'
+      });
+    }
+
+    if (bcryptService().comparePassword(password, user.password)) {
+      const tokenResult = authService.issue({ id: user.id });
+
+      return res.status(200).json({ 
+        token: tokenResult.token,
+        tokenIssuedDate: tokenResult.tokenIssuedDate,
+        tokenExpiredDate: tokenResult.tokenExpiredDate,
+        userId: user.id
+      });
+    }
+
+    return res.status(401).json({ 
+      msg: 'Unauthorized' 
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Internal server error' });
   }
 
   return res.status(400).json({ msg: 'Bad Request: Email or password is wrong' });

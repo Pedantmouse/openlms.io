@@ -55,10 +55,14 @@ app.use(bodyParser.json());
 app.get('/api/v1/test', userController.test);
 
 //////////////////////////////////////////////////////////////
-// Users
+// Auth
 // ===========================================================
+app.post('/api/v1/register/email', userController.register);
+app.post('/api/v1/login/email', userController.login);
+
+
+
 // app.get('/api/v1/users', auth, userController.getUsers);
-app.post('/api/v1/users', userController.register);
 // app.put('/api/v1/users', auth, userController.updateUsers);
 
 // app.get('/api/v1/user/:id', auth, userController.getUser);

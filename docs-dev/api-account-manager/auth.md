@@ -13,7 +13,7 @@
 > This is where the user is created. All other API(s) in this ecosystem will require the user first register here. The first user that registers with the account manager api will be granted all admin privages.
 
 ```endpoint
-POST /api/v1/users
+POST /api/v1/register/email
 ```
 
 #### Body Params
@@ -107,10 +107,10 @@ Service is down.
 
 ## Login
 
-> An existing user can use this endpoint to get the token needed to access his data.
+> An existing user can use this endpoint to get the token needed to access their data. By logging into a disabled account, you will need to get reable account.
 
 ```endpoint
-POST /api/v1/login
+POST /api/v1/login/email
 ```
 
 #### Body Params
@@ -162,6 +162,24 @@ Bad Request:
 Your credentials are bad.
 
 ```json
+{
+    "msg": "Bad Request: Email and password required.",
+    "humanMsg": "Please enter your account information"
+}
+```
+
+#### ** 401 **
+
+Unauthorized:
+Your account is disabled. You will need to reactivate it.
+
+
+```json
+{
+    "msg": "Unauthorized: User account is disabled.",
+    "humanMsg": "This account is disabled.",
+    "resolve": "/api/v1/reactivate/email"
+}
 
 ```
 
@@ -174,7 +192,10 @@ The user has been blocked from service. This can be from any reason. But here ar
 
 
 ```json
-
+{
+    "msg": "Forbidden: User has been banned.",
+    "humanMsg": "This account is suspended."
+}
 ```
 
 #### ** 500 **
