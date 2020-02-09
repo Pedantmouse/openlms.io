@@ -12,7 +12,11 @@ const dbService = (migrate) => {
 
   async function syncDBs() {
     for (var db in databases) {
-      await databases[db].sync();
+      if (migrate) {
+        await databases[db].sync({alter: true});
+      } else {
+        await databases[db].sync();
+      }
     }
   }
   

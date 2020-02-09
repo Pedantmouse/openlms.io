@@ -4,29 +4,61 @@ const bcryptService = require('../services/bcrypt.service');
 
 exports.register = async (req, res) => {
   const { body } = req;
-
-  if (body.password === undefined || body.password === null) {
-    return res.status(400).json({ 
-      msg: 'Bad Request: Password is missing.', 
-      humanMsg: 'Please enter a password for your account' 
-    });
-  }
-
-  if (body.password.length < 6) {
-    return res.status(400).json({ 
-      msg: 'Bad Request: Password is missing.',
-      humanMsg: 'Your password needs to be at least 6 letters.' 
-    });
-  }
-
   try {
+    if (body === null || body === undefined) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Body was not present.', 
+        humanMsg: 'Please enter a password for your account' 
+      });
+    }
+    
+    if (Object.keys(body).length === 0) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Body was not present.', 
+        humanMsg: 'Please enter a password for your account' 
+      });
+    }
+    
+    let isAdmin = false;
+    const userCount = await User.count();
+    const doesUserEmailExist = await User.findOne({where:{
+      email: body.email
+    }});
+    
+    if (userCount === 0) {
+      isAdmin = true;
+    }
+
+    if (doesUserEmailExist){
+      return res.status(409).json({
+        "msg": "Conflict: User email already has existing email",
+        "humanMsg": "This email has already been register."
+      });
+    }
+
+
+    if (body.password === undefined || body.password === null) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Password is missing.', 
+        humanMsg: 'Please enter a password for your account' 
+      });
+    }
+
+    if (body.password.length < 6) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Password is missing.',
+        humanMsg: 'Your password needs to be at least 6 letters.' 
+      });
+    }
+
     const user = await User.create({
       email: body.email,
       password: body.password,
+      isAdmin: isAdmin
     });
     const tokenResult = authService.issue({ id: user.id });
 
-    return res.status(200).json({ 
+    return res.status(201).json({ 
       token: tokenResult.token,
       tokenIssuedDate: tokenResult.tokenIssuedDate,
       tokenExpiredDate: tokenResult.tokenExpiredDate,
@@ -80,6 +112,10 @@ exports.validate = (req, res) => {
 
     return res.status(200).json({ isvalid: true });
   });
+};
+
+exports.refreshToken = (req, res) => {
+
 };
 
 exports.getAll = async (req, res) => {

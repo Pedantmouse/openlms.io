@@ -35,6 +35,9 @@ const User = sequelize.define('User', {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
     allowNull:false
+  },
+  test:{
+    type: Sequelize.STRING
   }
 }, { hooks, tableName });
 
