@@ -13,7 +13,7 @@
 > This is where the user is created. All other API(s) in this ecosystem will require the user first register here. The first user that registers with the account manager api will be granted all admin privages.
 
 ```endpoint
-POST /api/v1/register/email
+POST /api/v1/auth/register/email
 ```
 
 #### Body Params
@@ -110,7 +110,7 @@ Service is down.
 > An existing user can use this endpoint to get the token needed to access their data. By logging into a disabled account, you will need to get reable account.
 
 ```endpoint
-POST /api/v1/login/email
+POST /api/v1/auth/login/email
 ```
 
 #### Body Params
@@ -178,7 +178,7 @@ Your account is disabled. You will need to reactivate it.
 {
     "msg": "Unauthorized: User account is disabled.",
     "humanMsg": "This account is disabled.",
-    "resolve": "/api/v1/reactivate/email"
+    "resolve": "/api/v1/auth/reactivate/email"
 }
 
 ```
@@ -214,10 +214,81 @@ Service is down.
 
 <!-- tabs:end -->
 
+## Validate Token
+
+> Is the token valid? This endpoint will tell you.
+
+```endpoint
+POST /api/v1/auth/token/validate
+```
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| token | string | Required |  |
+
+#### Success
+
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| isValid | boolean | Is the token valid. |
+
+
+
+```json
+{
+    "isValid": true
+}
+```
+
+
+<!-- tabs:end -->
+
+
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad Request: 
+The body doesn't contain a token.
+
+```json
+{
+    "msg": "Bad Request: The body should contain a token."
+}
+```
+
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+
+
+
+<!-- tabs:end -->
+
+
 ## Forgot Password
 
 ## Refresh Token
-
-## Verifty Token
 
 ## Disable Account

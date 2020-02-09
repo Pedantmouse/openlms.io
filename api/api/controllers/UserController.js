@@ -65,7 +65,7 @@ exports.register = async (req, res) => {
       userId: user.id
       });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({ msg: 'Internal server error' });
   }
 };
@@ -81,8 +81,6 @@ exports.login = async (req, res) => {
       });
     }
   
-
-    console.log("email", email)
     const user = await User
       .findOne({
         where: {
@@ -139,37 +137,49 @@ exports.login = async (req, res) => {
 exports.validate = (req, res) => {
   const { token } = req.body;
 
-  authService.verify(token, (err) => {
-    if (err) {
-      return res.status(401).json({ isvalid: false, err: 'Invalid Token!' });
+  try {
+    if (!token) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: The body should contain a token.' 
+      });
     }
 
-    return res.status(200).json({ isvalid: true });
-  });
+    authService.verify(token, (err) => {
+      if (err) {
+        return res.status(200).json({ isValid: false });
+      }
+
+      return res.status(200).json({ isValid: true });
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
 };
 
 exports.refreshToken = (req, res) => {
 
 };
 
-exports.getAll = async (req, res) => {
-  try {
-    const users = await User.findAll();
+// exports.getAll = async (req, res) => {
+//   try {
+//     const users = await User.findAll();
 
-    return res.status(200).json({ users });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ msg: 'Internal server error' });
-  }
-};
+//     return res.status(200).json({ users });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ msg: 'Internal server error' });
+//   }
+// };
 
-exports.test = async (req, res) => {
-  try {
+// exports.test = async (req, res) => {
+//   try {
 
-    return res.status(200).json({asdf: "Hi, from api"});
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ msg: 'Internal server error' });
-  }
-};
+//     return res.status(200).json({asdf: "Hi, from api"});
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ msg: 'Internal server error' });
+//   }
+// };
 

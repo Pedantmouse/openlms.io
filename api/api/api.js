@@ -52,13 +52,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // routes
-app.get('/api/v1/test', userController.test);
+// app.get('/api/v1/test', userController.test);
 
 //////////////////////////////////////////////////////////////
 // Auth
 // ===========================================================
-app.post('/api/v1/register/email', userController.register);
-app.post('/api/v1/login/email', userController.login);
+app.post('/api/v1/auth/register/email', userController.register);
+app.post('/api/v1/auth/login/email', userController.login);
+app.post('/api/v1/auth/validate/token', userController.validate);
 
 
 
