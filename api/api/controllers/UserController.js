@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const authService = require('../services/auth.service');
 const bcryptService = require('../services/bcrypt.service');
+const jwt = require('jsonwebtoken');
+
 
 exports.register = async (req, res) => {
   const { body } = req;
@@ -134,7 +136,7 @@ exports.login = async (req, res) => {
   return res.status(400).json({ msg: 'Bad Request: Email or password is wrong' });
 };
 
-exports.validate = (req, res) => {
+exports.validateToken = (req, res) => {
   const { token } = req.body;
 
   try {
@@ -159,7 +161,38 @@ exports.validate = (req, res) => {
 };
 
 exports.refreshToken = (req, res) => {
+  const { token } = req.body;
 
+  try{
+    authService.verify(token, (err, decodedToken) => {
+      if (err && err.name === 'TokenExpiredError') {
+        return res.status(401).json({ msg: 'Unauthorized: Token has expired.' });
+      }
+      if (err && err.name === 'JsonWebTokenError') {
+        return res.status(400).json({ msg: 'Bad Request: Token is invalid.' });
+      }
+
+      //catch all
+      if (err) {
+        return res.status(500).json({ msg: 'Internal server error' });
+      }
+
+      delete decodedToken.iat;
+      delete decodedToken.exp;
+      
+      const tokenResult = authService.issue(decodedToken);
+
+      return res.status(200).json({ 
+        token: tokenResult.token,
+        tokenIssuedDate: tokenResult.tokenIssuedDate,
+        tokenExpiredDate: tokenResult.tokenExpiredDate,
+        userId: decodedToken.id
+      });
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
 };
 
 // exports.getAll = async (req, res) => {

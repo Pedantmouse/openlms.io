@@ -287,8 +287,97 @@ Service is down.
 <!-- tabs:end -->
 
 
-## Forgot Password
-
 ## Refresh Token
+
+> Refresh that token before it expires.
+
+```endpoint
+POST /api/v1/auth/token/refresh
+```
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| token | string | Required |  |
+
+#### Success
+
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| token | string | The token the user will use for subsequent request. |
+| tokenIssuedDate | string | In utc time. |
+| tokenExpiredDate | string | In utc time. |
+| userId | number | |
+
+
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTgxMTk4MDcwLCJleHAiOjE1ODEyNTgwNzB9.-doO4Ff_E_P70CGpplDYqRha9h6lz62glxJLTZGcE4I",
+    "tokenIssuedDate": "Sat, 08 Feb 2020 21:41:10 GMT",
+    "tokenExpiredDate": "Sat, 08 Feb 2020 21:42:10 GMT",
+    "userId": 1
+}
+```
+
+<!-- tabs:end -->
+
+
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad Request: 
+That is not a token. You need to login it to receive another token
+
+```json
+{
+    "msg": "Bad Request: Token is invalid.",
+    "resolve": "/api/v1/auth/login/email"
+}
+```
+
+#### ** 401 **
+
+Unauthorized: 
+The token has expired. You need to login it to receive another token
+
+```json
+{
+    "msg": "Unauthorized: Token has expired.",
+    "resolve": "/api/v1/auth/login/email"
+}
+```
+
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+
+
+
+<!-- tabs:end -->
+
+
+## Forgot Password
 
 ## Disable Account

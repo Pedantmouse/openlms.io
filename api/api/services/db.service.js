@@ -1,7 +1,7 @@
 const databases = require('../../config/databases');
 
-const dbService = (migrate) => {
-  migrate = migrate ? migrate : true;
+const dbService = (options) => {
+  options.migrate = options.migrate !== null ? options.migrate : true;
 
   async function authenticateDBs() {
     
@@ -12,11 +12,7 @@ const dbService = (migrate) => {
 
   async function syncDBs() {
     for (var db in databases) {
-      if (migrate) {
-        await databases[db].sync({alter: true});
-      } else {
-        await databases[db].sync();
-      }
+      await databases[db].sync({alter: true});
     }
   }
   
@@ -32,7 +28,7 @@ const dbService = (migrate) => {
     try {
       await authenticateDBs();
       
-      if (migrate) {
+      if (options.migrate) {
         await syncDBs();
       }
 

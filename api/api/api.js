@@ -12,6 +12,7 @@ const cors = require('cors');
  * server configuration
  */
 const dbService = require('./services/db.service');
+const authService = require('./services/auth.service');
 const auth = require('./policies/auth.policy');
 
 
@@ -34,7 +35,7 @@ const databases = require('../config/databases');
 
 const app = express();
 const server = http.Server(app);
-const DB = dbService(true).start();
+const DB = dbService({migrate: process.env.DB_MIGRATE && process.env.DB_MIGRATE === 'true'}).start();
 
 // allow cross origin requests
 // configure to only allow requests from certain origins
@@ -51,6 +52,13 @@ app.use(helmet({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.all('*', authService.tokenMiddleware({excludedRoutes:[
+  '/api/v1/auth/register',
+  '/api/v1/auth/login',
+  '/api/v1/auth/forgot-password',
+  '/api/v1/auth/token/*',
+]}));
+
 // routes
 // app.get('/api/v1/test', userController.test);
 
@@ -59,7 +67,8 @@ app.use(bodyParser.json());
 // ===========================================================
 app.post('/api/v1/auth/register/email', userController.register);
 app.post('/api/v1/auth/login/email', userController.login);
-app.post('/api/v1/auth/validate/token', userController.validate);
+app.post('/api/v1/auth/token/validate', userController.validateToken);
+app.post('/api/v1/auth/token/refresh', userController.refreshToken);
 
 
 

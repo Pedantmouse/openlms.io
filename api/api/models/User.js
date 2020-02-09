@@ -16,11 +16,8 @@ const tableName = 'users';
 const User = sequelize.define('User', {
   email: {
     type: Sequelize.STRING,
-    unique: true,
+    // unique: true,
     allowNull:false,
-    validate: {
-      isEmail: true
-    }
   },
   password: {
     type: Sequelize.STRING,
