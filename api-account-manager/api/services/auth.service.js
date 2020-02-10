@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
 const utils = require('../utils');
+const User = require('../models/User');
 
 const secret = process.env.TOKEN_SECRET || 'secret';
+let permissionsTracker = {};
+
+//////////////////////////////////////////////////////////////
+// TOKEN Below
+// ===========================================================
 
 exports.issue = (payload) => {
   var tokenDurationInMilis = (process.env.TOKEN_EXPIRE_MILISECONDS ? parseInt(process.env.TOKEN_EXPIRE_MILISECONDS) : undefined) || 60000,
@@ -22,11 +28,11 @@ exports.tokenMiddleware = (options) => {
   return (req, res, next) => {
     const { token } = req.body,
           { excludedRoutes } = options,
-          { path } = req.route;
+          { originalUrl } = req;
 
     try {      
       for(var i = 0; i < excludedRoutes.length; i++) {
-        if(utils.StringValidation.wildTest(path, excludedRoutes[i])) {
+        if(utils.StringValidation.wildTest(originalUrl, excludedRoutes[i])) {
           
           //This route doesn't required a token.
           next();
@@ -58,3 +64,48 @@ exports.tokenMiddleware = (options) => {
     }
   }
 }
+
+//////////////////////////////////////////////////////////////
+// TOKEN Above
+// ===========================================================
+// Authorization below
+//////////////////////////////////////////////////////////////
+
+exports.onlyAdmin = async (req, res, next) => {
+  const userId = req.decodedToken.id;
+
+  const user = await User
+  .findOne({
+    where: {
+      id: userId
+    },
+  });
+
+  if(!user) {
+    // Tigger here in future.
+    return res.status(401).json({
+      msg: 'Unauthorized.',
+      humanMsg: 'You don\'t the necessary permission(s).',
+      resolve: {
+        role: "Admin"
+      }
+    });
+  }
+
+  if(user.isAdmin) {
+    next()
+  } else {
+    return res.status(401).json({
+      msg: 'Unauthorized.',
+      humanMsg: 'You don\'t the necessary permission(s).',
+      resolve: {
+        role: "Admin"
+      }
+    });
+  }
+}
+
+exports.permissions = (req, res, next) => {
+
+}
+
