@@ -20,6 +20,7 @@ const auth = require('./policies/auth.policy');
  * controllers
  */
 const authController = require('./controllers/AuthController');
+const testController = require('./controllers/TestController');
 
 
 
@@ -54,10 +55,13 @@ app.use(bodyParser.json());
 
 app.all('*', authService.tokenMiddleware({excludedRoutes:[
   '/api/v1/auth/*',
+  '/api/v1/test'
 ]}));
 
 // routes
 // app.get('/api/v1/test', authController.test);
+app.get('/api/v1/test', testController.test);
+
 
 //////////////////////////////////////////////////////////////
 // Auth Below
