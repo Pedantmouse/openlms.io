@@ -1,66 +1,35 @@
 const Sequelize = require('sequelize');
-const path = require('path');
 
 let databases= {};
 
-databases.accountManager = new Sequelize(
-  process.env.DB_NAME_ACCOUNT_MANAGER,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST || 'localhost',
-    dialect: 'mysql',
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000,
-    },
-  },
-);
+for(var i = 0; i < 50; i++) {
+  const dbName = process.env["DB_"+i+"_NAME"],
+        dbUsername = process.env["DB_"+i+"_USERNAME"],
+        dbPassword = process.env["DB_"+i+"_PASSWORD"],
+        dbHost = process.env["DB_"+i+"_HOST"],
+        dbPort = process.env["DB_"+i+"_PORT"]
 
-databases.crm = new Sequelize(
-  process.env.DB_NAME_CRM,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST || 'localhost',
-    dialect: 'mysql',
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000,
-    },
-  },
-);
+  console.log('connection', dbName, dbUsername, dbPassword, dbHost, dbPort)
+  
+  if (!dbName) {
+    break;
+  }
 
-databases.cms = new Sequelize(
-  process.env.DB_NAME_CMS,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST || 'localhost',
-    dialect: 'mysql',
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000,
+  databases[dbName] = new Sequelize(
+    dbName,
+    dbUsername,
+    dbPassword,
+    {
+      host: dbHost || 'localhost',
+      port: dbPort || '3306',
+      dialect: 'mysql',
+      pool: {
+        max: 5,
+        min: 0,
+        idle: 10000,
+      },
     },
-  },
-);
-
-databases.lms = new Sequelize(
-  process.env.DB_NAME_LMS,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST || 'localhost',
-    dialect: 'mysql',
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000,
-    },
-  },
-);
+  );  
+}
 
 module.exports = databases;
