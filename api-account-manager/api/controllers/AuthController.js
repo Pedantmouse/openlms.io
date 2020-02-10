@@ -293,10 +293,7 @@ exports.disable = (req, res) => {
         user.isDisabled = true;
         user.save().then((user, err) => {
           if (err) {
-            return res.status(401).json({
-              msg: 'Unauthorized'
-            });
-
+            return res.status(500).json({ msg: 'Internal server error' });
           }
 
           return res.status(200).json({
@@ -312,28 +309,62 @@ exports.disable = (req, res) => {
 }
 
 exports.reactivate = (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    if (!email || !password) {
+      return res.status(400).json({
+        msg: 'Bad Request: Email and password required.',
+        humanMsg: 'Please enter your account information'
+      });
+    }
+
+
+    if (!utils.StringValidation.email(email)) {
+      return res.status(400).json({
+        msg: 'Bad Request: Email not a valid email.',
+        humanMsg: 'Please enter a valid email.'
+      });
+    }
+
+
+    User.findOne({
+      where: {
+        email
+      },
+    }).then((user, err) => {
+
+      if (!user) {
+        return res.status(400).json({
+          msg: 'Bad Request: User not found',
+          humanMsg: 'No account exist with this email.'
+        });
+      }
+
+
+      if (user.isBanned) {
+        return res.status(403).json({
+          msg: 'Forbidden: User has been banned.',
+          humanMsg: 'This account is suspended.'
+        });
+      }
+
+      if (bcryptService().comparePassword(password, user.password)) {
+        user.isDisabled = false;
+        user.save().then((user, err) => {
+          if (err) {
+            return res.status(500).json({ msg: 'Internal server error' });
+          }
+
+          return res.status(200).json({
+            msg: "Account successfully reactivated"
+          });
+        })
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
 
 }
-
-
-// exports.getAll = async (req, res) => {
-//   try {
-//     const users = await User.findAll();
-
-//     return res.status(200).json({ users });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ msg: 'Internal server error' });
-//   }
-// };
-
-// exports.test = async (req, res) => {
-//   try {
-
-//     return res.status(200).json({asdf: "Hi, from api"});
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ msg: 'Internal server error' });
-//   }
-// };
-

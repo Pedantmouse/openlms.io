@@ -480,7 +480,9 @@ schema
 
 
 ```json
-
+{
+    "msg": "Account successfully disabled"
+}
 ```
 
 <!-- tabs:end -->
@@ -496,7 +498,10 @@ schema
 Bad Request: 
 
 ```json
-
+{
+    "msg": "Bad Request: Email not a valid email.",
+    "humanMsg": "Please enter a valid email."
+}
 ```
 
 #### ** 500 **
@@ -519,3 +524,73 @@ Service is down.
 
 
 ## Reactivate Account
+
+> The user will user this endpoint to reactivate a disabled account.
+
+```endpoint
+POST /api/v1/auth/reactivate
+```
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| password | string | Required |  |
+| email | email | Required |  |
+
+#### Success
+
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| msg | string |  |
+
+
+```json
+{
+    "msg": "Account successfully reactivated"
+}
+```
+
+<!-- tabs:end -->
+
+
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad Request: 
+
+```json
+{
+    "msg": "Bad Request: Email not a valid email.",
+    "humanMsg": "Please enter a valid email."
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+
+
+
+<!-- tabs:end -->
+
+
