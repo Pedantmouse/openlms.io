@@ -390,7 +390,7 @@ POST /api/v1/auth/forgot-password
 
 | Name | Type | Required/Optional | Description|
 |---|---|---|---|
-| token | string | Required |  |
+| email | string | Required |  |
 
 #### Success
 
@@ -451,3 +451,71 @@ Service is down.
 
 
 ## Disable Account
+
+> The user will user this endpoint to disable account.
+
+```endpoint
+POST /api/v1/auth/disable
+```
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| password | string | Required |  |
+| email | email | Required |  |
+
+#### Success
+
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| msg | string |  |
+
+
+```json
+
+```
+
+<!-- tabs:end -->
+
+
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad Request: 
+
+```json
+
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+
+
+
+<!-- tabs:end -->
+
+
+
+
+## Reactivate Account
