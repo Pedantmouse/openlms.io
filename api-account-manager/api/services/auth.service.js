@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const utils = require('../utils');
 
 const secret = process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'secret';
 
@@ -24,15 +25,9 @@ exports.tokenMiddleware = (options) => {
           { excludedRoutes } = options,
           { path } = req.route;
 
-    try {
-      // https://stackoverflow.com/questions/26246601/wildcard-string-comparison-in-javascript
-      function wildTest(wildcard, str) {
-        const re = new RegExp(`^${wildcard.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
-        return re.test(str); // remove last 'i' above to have case sensitive
-      }
-      
+    try {      
       for(var i = 0; i < excludedRoutes.length; i++) {
-        if(wildTest(path, excludedRoutes[i])) {
+        if(utils.StringValidation.wildTest(path, excludedRoutes[i])) {
           
           //This route doesn't required a token.
           next();

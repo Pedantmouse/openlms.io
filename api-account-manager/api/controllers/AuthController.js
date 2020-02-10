@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const authService = require('../services/auth.service');
 const bcryptService = require('../services/bcrypt.service');
-const jwt = require('jsonwebtoken');
+const utils = require('../utils');
 
 
 exports.register = async (req, res) => {
@@ -194,6 +194,46 @@ exports.refreshToken = (req, res) => {
     return res.status(500).json({ msg: 'Internal server error' });
   }
 };
+
+exports.forgotPassword = (req, res) => {
+  const { email } = req.body;
+
+  try{
+    if (!email) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Email required.', 
+        humanMsg: 'Please enter your email.' 
+      });
+    }
+
+    if (!utils.StringValidation.email(email)) {
+      return res.status(400).json({ 
+        msg: 'Bad Request: Email not a valid email.', 
+        humanMsg: 'Please enter a valid email.' 
+      });
+    }
+
+    //email service with forgot password link.
+
+    return res.status(200).json({ 
+      msg: "Email has been sent",
+      humanMsg: "Email has been sent."
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
+}
+
+exports.disable = (req, res) => {
+
+}
+
+exports.reactivate = (req, res) => {
+
+}
+
 
 // exports.getAll = async (req, res) => {
 //   try {

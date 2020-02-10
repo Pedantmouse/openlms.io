@@ -19,7 +19,7 @@ const auth = require('./policies/auth.policy');
 /**
  * controllers
  */
-const userController = require('./controllers/UserController');
+const authController = require('./controllers/AuthController');
 
 
 
@@ -53,31 +53,37 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.all('*', authService.tokenMiddleware({excludedRoutes:[
-  '/api/v1/auth/register',
-  '/api/v1/auth/login',
-  '/api/v1/auth/forgot-password',
-  '/api/v1/auth/token/*',
+  '/api/v1/auth/*',
 ]}));
 
 // routes
-// app.get('/api/v1/test', userController.test);
+// app.get('/api/v1/test', authController.test);
 
 //////////////////////////////////////////////////////////////
-// Auth
+// Auth Below
 // ===========================================================
-app.post('/api/v1/auth/register/email', userController.register);
-app.post('/api/v1/auth/login/email', userController.login);
-app.post('/api/v1/auth/token/validate', userController.validateToken);
-app.post('/api/v1/auth/token/refresh', userController.refreshToken);
+app.post('/api/v1/auth/register/email', authController.register);
+app.post('/api/v1/auth/login/email', authController.login);
+app.post('/api/v1/auth/token/validate', authController.validateToken);
+app.post('/api/v1/auth/token/refresh', authController.refreshToken);
+app.post('/api/v1/auth/forgot-password', authController.forgotPassword);
+app.post('/api/v1/auth/disable', authController.disable);
+app.post('/api/v1/auth/reactivate', authController.reactivate);
 
 
+//////////////////////////////////////////////////////////////
+// Auth Above
+// ===========================================================
+// Admin Permissions And Roles
+//////////////////////////////////////////////////////////////
 
-// app.get('/api/v1/users', auth, userController.getUsers);
-// app.put('/api/v1/users', auth, userController.updateUsers);
 
-// app.get('/api/v1/user/:id', auth, userController.getUser);
-// app.put('/api/v1/user/:id', auth, userController.updateUser);
-// app.delete('/api/v1/user/:id', auth, userController.disableUser);
+// app.get('/api/v1/users', auth, authController.getUsers);
+// app.put('/api/v1/users', auth, authController.updateUsers);
+
+// app.get('/api/v1/user/:id', auth, authController.getUser);
+// app.put('/api/v1/user/:id', auth, authController.updateUser);
+// app.delete('/api/v1/user/:id', auth, authController.disableUser);
 
 
 server.listen(process.env.PORT || '2017', () => {

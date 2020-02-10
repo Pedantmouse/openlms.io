@@ -380,4 +380,74 @@ Service is down.
 
 ## Forgot Password
 
+> Send an email with a link to reset password.
+
+```endpoint
+POST /api/v1/auth/forgot-password
+```
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| token | string | Required |  |
+
+#### Success
+
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| msg | string |  |
+| humanMsg | string |  |
+
+
+```json
+{
+    "msg": "Email has been sent",
+    "humanMsg": "Email has been sent."
+}
+```
+
+<!-- tabs:end -->
+
+
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad Request: 
+
+```json
+{
+    "msg": "Bad Request: Email not a valid email.",
+    "humanMsg": "Please enter a valid email."
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+
+
+
+<!-- tabs:end -->
+
+
 ## Disable Account
