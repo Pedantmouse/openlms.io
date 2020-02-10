@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const utils = require('../utils');
 
-const secret = process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'secret';
-
+const secret = process.env.TOKEN_SECRET || 'secret';
 
 exports.issue = (payload) => {
   var tokenDurationInMilis = (process.env.TOKEN_EXPIRE_MILISECONDS ? parseInt(process.env.TOKEN_EXPIRE_MILISECONDS) : undefined) || 60000,
