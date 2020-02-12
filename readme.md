@@ -6,14 +6,8 @@ This project contains many APIs and UIs. You need to first configure all of your
 
 ```.
 ├── root
-│   ├── api-account-manager
+│   ├── api
 │   │   └── .env
-│   ├── api-lms
-│   |    └── .env
-│   ├── api-crm
-│   |    └── .env
-│   ├── api-cms
-│   |    └── .env
 │   └── .env
 ```
 

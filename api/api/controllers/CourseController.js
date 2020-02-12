@@ -1,4 +1,4 @@
-const Course = require('../models/Course');
+const Course = require('../models/Organization/Course');
 const utils = require('../utils');
 
 
@@ -9,7 +9,7 @@ const utils = require('../utils');
 exports.getCourses = async (req, res) => {
     try {
 
-        req.status(200).json({ success: "Method hit!" })
+        res.status(200).json({ success: "Method hit!" })
 
     } catch (err) {
         console.error(err);
@@ -20,7 +20,7 @@ exports.getCourses = async (req, res) => {
 exports.createCourse = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {
@@ -32,7 +32,7 @@ exports.createCourse = async (req, res) => {
 exports.updateCourses = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {
@@ -44,7 +44,7 @@ exports.updateCourses = async (req, res) => {
 exports.deleteCourses = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {
@@ -62,7 +62,7 @@ exports.deleteCourses = async (req, res) => {
 exports.getCourse = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {
@@ -74,7 +74,7 @@ exports.getCourse = async (req, res) => {
 exports.updateCourse = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {
@@ -86,7 +86,7 @@ exports.updateCourse = async (req, res) => {
 exports.deleteCourse = async (req, res) => {
     try {
 
-        req.status(200).json({success: "Method hit!"})
+        res.status(200).json({success: "Method hit!"})
 
 
     } catch (err) {

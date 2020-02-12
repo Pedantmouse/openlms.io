@@ -22,6 +22,9 @@ const auth = require('./policies/auth.policy');
 const authController = require('./controllers/AuthController');
 const testController = require('./controllers/TestController');
 
+//Organization
+const courseController = require('./controllers/CourseController');
+
 
 
 
@@ -55,7 +58,8 @@ app.use(bodyParser.json());
 
 app.all('*', authService.tokenMiddleware({excludedRoutes:[
   '/api/v1/auth/*',
-  '/api/v1/test'
+  '/api/v1/test',
+  '/api/v1/organization/*'
 ]}));
 
 // routes
@@ -78,9 +82,32 @@ app.post('/api/v1/auth/reactivate', authController.reactivate);
 //////////////////////////////////////////////////////////////
 // Auth Above
 // ===========================================================
-// Admin Permissions And Roles
+// Admin Permissions And Roles Above
 //////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////
+// Admin Permissions And Roles Above
+// ===========================================================
+// Courses Below
+//////////////////////////////////////////////////////////////
+app.get('/api/v1/organization/courses', authService.permissions(["asdf", "sdf"], "asdf"), courseController.getCourses);
+app.post('/api/v1/organization/courses', courseController.createCourse);
+app.put('/api/v1/organization/courses', courseController.updateCourses);
+app.delete('/api/v1/organization/courses', courseController.deleteCourses);
+
+app.get('/api/v1/organization/courses/:id', courseController.getCourse);
+// 405 Method not allow
+// app.post('/api/v1/organization/getCourses/:id', courseController.getCourse);
+app.put('/api/v1/organization/courses/:id', courseController.updateCourse);
+app.delete('/api/v1/organization/courses/:id', courseController.deleteCourse);
+
+
+
+
+//////////////////////////////////////////////////////////////
+// Courses Above
+// ===========================================================
 
 // app.get('/api/v1/users', auth, authController.getUsers);
 // app.put('/api/v1/users', auth, authController.updateUsers);

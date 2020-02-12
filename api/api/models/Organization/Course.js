@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
-const databases = require('../../config/databases');
-const sequelize = databases.accounts;
+const databases = require('../../../config/databases');
+const db = databases.lms;
 
 const tableName = 'courses';
 
-const Course = sequelize.define('User', {
+const Course = db.define('User', {
   name: {
     type: Sequelize.STRING,
     // unique: true,

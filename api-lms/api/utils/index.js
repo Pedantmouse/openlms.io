@@ -1,2 +1,0 @@
-exports.StringValidation = require('./StringValidations');
-
