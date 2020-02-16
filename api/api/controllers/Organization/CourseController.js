@@ -1,5 +1,5 @@
-const Course = require('../models/Organization/Course');
-const utils = require('../utils');
+const Course = require('../../models/Course');
+const utils = require('../../utils');
 
 
 //////////////////////////////////////////////////////////////

@@ -46,6 +46,7 @@
     "helmet": "^3.12.0",
     "jsonwebtoken": "^8.2.1",
     "mysql2": "^2.1.0",
+    "paginate-info": "^1.0.4",
     "sequelize": "^5.21.4",
     "sqlite3": "^4.0.0"
   },

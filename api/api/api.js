@@ -13,7 +13,6 @@ const cors = require('cors');
  */
 const dbService = require('./services/db.service');
 const authService = require('./services/auth.service');
-const auth = require('./policies/auth.policy');
 
 
 /**
@@ -21,9 +20,13 @@ const auth = require('./policies/auth.policy');
  */
 const authController = require('./controllers/AuthController');
 const testController = require('./controllers/TestController');
+const genericController = require('./controllers/GenericController');
+
+//Admin
+const adminUserController = require('./controllers/Admin/UserController');
 
 //Organization
-const courseController = require('./controllers/CourseController');
+const courseController = require('./controllers/Organization/CourseController');
 
 
 
@@ -58,8 +61,7 @@ app.use(bodyParser.json());
 
 app.all('*', authService.tokenMiddleware({excludedRoutes:[
   '/api/v1/auth/*',
-  '/api/v1/test',
-  '/api/v1/organization/*'
+  '/api/v1/test'
 ]}));
 
 // routes
@@ -82,23 +84,33 @@ app.post('/api/v1/auth/reactivate', authController.reactivate);
 //////////////////////////////////////////////////////////////
 // Auth Above
 // ===========================================================
-// Admin Permissions And Roles Above
+// Admin Below
 //////////////////////////////////////////////////////////////
+app.get('/api/v1/admin/users', authService.onlyAdmin, adminUserController.getUsers);
+app.post('/api/v1/admin/users', authService.onlyAdmin, adminUserController.createUser);
+app.put('/api/v1/admin/users', authService.onlyAdmin, adminUserController.updateUsers);
+app.delete('/api/v1/admin/users', authService.onlyAdmin, genericController.response405);
+
+app.get('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.getUser);
+app.post('/api/v1/organization/users/:id', genericController.response405);
+app.put('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.updateUser);
+app.delete('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.deleteUser);
 
 
+
 //////////////////////////////////////////////////////////////
-// Admin Permissions And Roles Above
+// Admin Above
 // ===========================================================
 // Courses Below
 //////////////////////////////////////////////////////////////
-app.get('/api/v1/organization/courses', authService.permissions(["asdf", "sdf"], "asdf"), courseController.getCourses);
+// app.get('/api/v1/organization/courses', authService.permissions(["cool", "blah"], "asdf"), courseController.getCourses);
+app.get('/api/v1/organization/courses', authService.permissions("Bobby"), courseController.getCourses);
 app.post('/api/v1/organization/courses', courseController.createCourse);
 app.put('/api/v1/organization/courses', courseController.updateCourses);
 app.delete('/api/v1/organization/courses', courseController.deleteCourses);
 
 app.get('/api/v1/organization/courses/:id', courseController.getCourse);
-// 405 Method not allow
-// app.post('/api/v1/organization/getCourses/:id', courseController.getCourse);
+app.post('/api/v1/organization/Courses/:id', genericController.response405);
 app.put('/api/v1/organization/courses/:id', courseController.updateCourse);
 app.delete('/api/v1/organization/courses/:id', courseController.deleteCourse);
 

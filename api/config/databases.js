@@ -9,8 +9,6 @@ for(var i = 0; i < 50; i++) {
         dbHost = process.env["DB_"+i+"_HOST"],
         dbPort = process.env["DB_"+i+"_PORT"]
 
-  console.log('connection', dbName, dbUsername, dbPassword, dbHost, dbPort)
-  
   if (!dbName) {
     break;
   }

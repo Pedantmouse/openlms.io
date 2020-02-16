@@ -1,7 +1,9 @@
 * Code & Snippets
     * [API](code/api.md)
-* API - Account Manager
-    * [Auth](api-account-manager/auth.md)
-    * [Permissions And Roles](api-account-manager/permissions-and-roles.md)
-    * [Notifications](api-account-manager/permissions-and-roles.md)
-    * [Profile](api-account-manager/permissions-and-roles.md)
+* API
+    * [Auth](api/auth.md)
+    * [Notifications](api/permissions-and-roles.md)
+    * [Profile](api/profile.md)
+    * Admin
+        * [Manager Users](api/admin/manager-users.md)
+        * [Permissions And Roles](api/admin/permissions-and-roles.md)

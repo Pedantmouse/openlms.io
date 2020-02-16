@@ -158,6 +158,9 @@ exports.permissions = (...theArgs) => {
                               SELECT count(*) as result FROM information_schema.TABLES\
                               WHERE (TABLE_NAME = 'users_roles')",
           { type: Sequelize.QueryTypes.SELECT });
+        // users_roles
+
+        console.log('doesPermissionsTableExist', doesPermissionsTableExist[0].id)
 
         if (!doesPermissionsTableExist[0].result) {
           await db.query("CREATE TABLE `permissions` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , PRIMARY KEY (`id`))");
@@ -187,11 +190,34 @@ exports.permissions = (...theArgs) => {
 
       // check if params have been install as columns.
       for (var i = 0; i < theArgs.length; i++) {
-        const doesColumnExist = knownPermissions[theArgs[i]];
+        if (typeof (theArgs[i]) === "string") {
+          const doesColumnExist = knownPermissions[theArgs[i]];
 
-        if (!doesColumnExist) {
-          // if collumns haven't, then install them in permissions and roles.
-          await installColumn(theArgs[i]);
+          if (!doesColumnExist) {
+            // if collumns haven't, then install them in permissions and roles.
+            await installColumn(theArgs[i]);
+          }
+        } else if (theArgs[i] instanceof Array) {
+          if (typeof (theArgs[i]) === "string") {
+            const doesColumnExist = knownPermissions[theArgs[i]];
+
+            if (!doesColumnExist) {
+              // if collumns haven't, then install them in permissions and roles.
+              await installColumn(theArgs[i]);
+            }
+          }
+          for (var x = 0; x < theArgs[i].length; x++) {
+            const doesColumnExist = knownPermissions[theArgs[i][x]];
+
+            if (!doesColumnExist) {
+              // if collumns haven't, then install them in permissions and roles.
+              await installColumn(theArgs[i][x]);
+            }
+          }
+
+          //string
+        } else {
+          throw 'Function "permissions" on object "AuthService" only takes string and array as arguments.';
         }
       }
 
@@ -209,29 +235,70 @@ exports.permissions = (...theArgs) => {
       }
 
       // Pull permissions and roles tables from token.
-      const userPermissions = (await db.query(`SELECT * FROM permissions WHERE user_id = ${req.decodedToken.id}`, { raw: true, type: Sequelize.QueryTypes.SELECT }))[0],
-        userRoles = (await db.query(`SELECT * FROM users_roles LEFT JOIN roles on roles.id = users_roles.role_id  WHERE users_roles.user_id = ${req.decodedToken.id}`, { raw: true, type: Sequelize.QueryTypes.SELECT }));
+      const userPermissions = (await db.query(`SELECT * FROM permissions WHERE user_id = ${req.decodedToken.id}`, {raw: true, type: Sequelize.QueryTypes.SELECT }))[0],
+        userRoles = (await db.query(`SELECT * FROM users_roles LEFT JOIN roles on roles.id = users_roles.role_id  WHERE users_roles.user_id = ${req.decodedToken.id}`, {raw: true, type: Sequelize.QueryTypes.SELECT }));
 
+
+      // check if user has permissions.
+      console.log('userPermissions', userPermissions);
+      console.log('userRoles', userRoles);
+
+      
 
       // check if params have been install as columns.
       loop_argument:
       for (var i = 0; i < theArgs.length; i++) {
-        //user permissions matches permission required to go to route.
-        if (userPermissions[theArgs[i]]) {
-          return next();
-        }
-
-        //user roles matches permission required to go to routes.
-        loop_roles:
-        for (var x = 0; x < userRoles.length; x++) {
-          if (userRoles[x][theArgs[i]]) {
+        if (typeof (theArgs[i]) === "string") {
+          console.log('Argument being processed', theArgs[i], userRoles);
+          //user permissions matches permission required to go to route.
+          if(userPermissions[theArgs[i]]) {
+            console.log('pass: User has '+ theArgs[i]+ ' permissions');
             return next();
+          }
+
+          //user roles matches permission required to go to routes.
+          loop_roles:
+          for(var x = 0; x < userRoles.length; x++) {
+            if(userRoles[x][theArgs[i]]) {
+              console.log('pass: User has the '+ theArgs[i]+ ' permissions in the ' + userRoles[x].name + ' role.');
+              return next();
+            }
+          }
+        } else if (theArgs[i] instanceof Array) {
+          var argArray = theArgs[0];
+          
+          loop_argument_array:
+          for(var x = 0; x < argArray.length; x++) {
+            if(userPermissions[argArray[x]]) {
+
+                //allow the last index through because the guy has every permission
+                if (argArray.length - 1 === y) {
+                  return next();
+                } else {
+                  continue loop_argument_array;
+                }
+            }
+            //user roles matches permission required to go to routes.
+            loop_roles:
+            for(var y = 0; y < userRoles.length; y++) {
+              if(userRoles[y][argArray[x]]) {
+                console.log('pass: User has the '+ theArgs[i]+ ' permissions in the ' + userRoles[x].name + ' role.');
+                
+                //allow the last index through because the guy has every permission
+                if (argArray.length - 1 === y) {
+                  return next();
+                }
+              }
+            }
           }
         }
       }
-      
-      return res.status(401).json({
-        msg: 'No Authorization was found'
+      // for (var i = 0; i < theArgs.length; i++) {
+
+      //   console.log("Arg:", theArgs[i], theArgs[i] instanceof Array);
+      // }
+      return res.status(401).json({ 
+        msg: 'No Authorization was found' 
       });
 
     } catch (err) {
