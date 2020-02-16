@@ -86,15 +86,42 @@ app.post('/api/v1/auth/reactivate', authController.reactivate);
 // ===========================================================
 // Admin Below
 //////////////////////////////////////////////////////////////
+//get permissions to map for user and roles.
+
+//manage roles
+
+//manage users
 app.get('/api/v1/admin/users', authService.onlyAdmin, adminUserController.getUsers);
 app.post('/api/v1/admin/users', authService.onlyAdmin, adminUserController.createUser);
 app.put('/api/v1/admin/users', authService.onlyAdmin, adminUserController.updateUsers);
 app.delete('/api/v1/admin/users', authService.onlyAdmin, genericController.response405);
 
 app.get('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.getUser);
-app.post('/api/v1/organization/users/:id', genericController.response405);
+app.post('/api/v1/admin/users/:id', authService.onlyAdmin,genericController.response405);
 app.put('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.updateUser);
 app.delete('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.deleteUser);
+
+//manage user permissions: only get, post, or delete
+// app.get('/api/v1/admin/users/:id/permissions');
+// app.put('/api/v1/admin/users/:id/permissions');
+// app.delete('/api/v1/admin/users/:id/permissions/:permissionId')
+
+//manage user roles: only get, post, or delete
+// app.get('/api/v1/admin/users/:id/roles');
+// app.post('/api/v1/admin/users/:id/roles');
+// app.delete('/api/v1/admin/users/:id/roles/:roleId')
+
+//manage user notifications: only get, put, or delete
+//I need to also reset the list of unseen.
+// app.get('/api/v1/admin/users/:id/notifications');
+// app.put('/api/v1/admin/users/:id/notifications/:notificationId');
+// app.delete('/api/v1/admin/users/:id/notifications/:notificationId');
+
+//manage user profile: only put or get
+// app.get('/api/v1/admin/users/:id/notifications');
+// app.put('/api/v1/admin/users/:id/notifications/:notificationId');
+// app.delete('/api/v1/admin/users/:id/notifications/:notificationId');
+
 
 
 

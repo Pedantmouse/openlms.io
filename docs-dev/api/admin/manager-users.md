@@ -19,7 +19,7 @@ GET /api/v1/admin/users
 
 #### Additional Information
 * Admin Type Only
-* Token required in header "Authorization: Bsearer {token}"
+* Token required in header "Authorization: Bearer {token}"
 * "user.isDeleted" = true will not show up here. You will need to update the database manually to bring a user back.
 
 #### URL Params
@@ -102,6 +102,134 @@ Unauthorized
     "resolve": {
         "role": "Admin"
     }
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+<!-- tabs:end -->
+
+
+
+
+
+## Post New User
+
+> Create a new user. Also has the option to email the user if mailinator environment variables are defined. 
+
+
+```endpoint
+POST /api/v1/admin/users
+```
+
+#### Additional Information
+* Admin Type Only
+* Token required in header "Authorization: Bearer {token}"
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| email | string | Required | |
+| password | string | Required | |
+| firstName | string | Required | |
+| lastName | string | Required | |
+| username | string | Required | only lowercase, alpha-numeric |
+| phoneNumber | string | Optional | format: (###) ###-#### |
+| website | string | Optional | |
+| isAdmin | string | Optional | |
+| shouldSendEmail | boolean | Optional | Should the user be email with password |
+| Roles | number[] | Optional | Array of role ids |
+
+#### Success
+
+<!-- tabs:start -->
+
+#### ** 201 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| user | object | current user record with new user id. |
+| user.profile | object | current user profile record with new profile id. |
+
+```json
+{
+   "user": {
+        "isBanned": false,
+        "isDisabled": false,
+        "isDeleted": false,
+        "id": 6,
+        "email": "porky3@acme.com",
+        "isOrganizationMember": true,
+        "isAdmin": false,
+        "updatedAt": "2020-02-16T04:50:22.235Z",
+        "createdAt": "2020-02-16T04:50:22.235Z",
+        "profile": {
+            "id": 6,
+            "userId": 6,
+            "firstName": "Porky",
+            "lastName": "Pig",
+            "website": "http://porkypig.com",
+            "username": "pigman",
+            "updatedAt": "2020-02-16T04:50:22.763Z",
+            "createdAt": "2020-02-16T04:50:22.763Z"
+        }
+   }
+}
+```
+
+<!-- tabs:end -->
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad request.
+You probably don't have all the required fields.
+
+```json
+{
+    "msg": "Bad Request: 'email' is required",
+    "humanMsg": "Please provide an email."
+}
+```
+
+#### ** 401 **
+
+Unauthorized
+
+```json
+{
+    "msg": "Unauthorized.",
+    "humanMsg": "You don't the necessary permission(s).",
+    "resolve": {
+        "role": "Admin"
+    }
+}
+```
+
+#### ** 409 **
+
+Conflict
+Email is already in use.
+
+```json
+{
+    "msg": "Conflict: User email already has existing email",
+    "humanMsg": "This email has already been register."
 }
 ```
 

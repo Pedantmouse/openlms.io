@@ -30,8 +30,6 @@ exports.getUsers = async (req, res) => {
         };
 
         if (searchQuery && !shouldIncludeProfile) {
-            // sqlWhere.where.email = { [Op.like]: '%' + searchQuery + '%' }
-
             sqlWhere.where[Op.or] = {
                 email: { [Op.like]: '%' + searchQuery + '%' }
             }
@@ -82,20 +80,13 @@ exports.getUsers = async (req, res) => {
             sqlWhere.where.isOrganizationMember = true;
         }
 
-
-        //missing sort
-
         const users = await User.findAndCountAll({
             ...sqlWhere,
             ...utils.Database.paginate({ page, pageSize }),
-            ...utils.Database.order({sortColumn, sortDirection, sortScope})
+            ...utils.Database.order({ sortColumn, sortDirection, sortScope })
         });
-        // order: [['profileImages', 'id', 'desc']]
-
-        console.log("users", users);
 
         res.status(200).json(users);
-
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: 'Internal server error' });
@@ -104,10 +95,88 @@ exports.getUsers = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
+        const { email, password, firstName, lastName, website, username, shouldSendEmail, roles, isAdmin } = req.body;
 
-        res.status(201).json({ success: "Method hit!" })
+        //check for requires, return 400 if missing.
 
+        if (!email) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'email' is required",
+                "humanMsg": "Please provide an email."
+            });
+        }
 
+        if (!utils.StringValidation.email(email)) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'email' is improperly formated",
+                "humanMsg": "Please provide a properly formated email address."
+            });
+        }
+
+        if (!password) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'password' is required",
+                "humanMsg": "Please provide an password."
+            });
+        }
+
+        if (!firstName) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'firstName' is required",
+                "humanMsg": "Please provide the first name."
+            });
+        }
+        
+        if (!lastName) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'lastName' is required",
+                "humanMsg": "Please provide the last name."
+            });
+        }
+        
+        if (!username) {
+            return res.status(400).json({
+                "msg": "Bad Request: 'username' is required",
+                "humanMsg": "Please provide the username."
+            });
+        }
+        
+        const doesUserEmailExist = await User.findOne({
+            where: {
+                email
+            }
+        });
+
+        if (doesUserEmailExist) {
+            return res.status(409).json({
+                "msg": "Conflict: User email already has existing email",
+                "humanMsg": "This email has already been register."
+            });
+        }
+        const user = await User.create({
+            email,
+            password,
+            isOrganizationMember: true,
+            isAdmin: isAdmin
+        });
+
+        const userProfile = await UserProfile.create({
+            userId: user.id,
+            firstName,
+            lastName,
+            website,
+            username
+        });
+
+        //email user
+
+        if (roles) {
+            //user roles update: list of ids
+
+        }
+
+        let returnObj = Object.assign({}, user.toJSON(), {profile: userProfile.toJSON()});
+        res.status(201).json({ user : returnObj});
     } catch (err) {
         console.error(err);
         return res.status(500).json({ msg: 'Internal server error' });
