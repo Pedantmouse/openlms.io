@@ -5,6 +5,7 @@ const utils = require('../utils');
 const User = require('../models/User');
 
 const secret = process.env.TOKEN_SECRET || 'secret';
+const db = database.lms;
 
 //////////////////////////////////////////////////////////////
 // TOKEN Below
@@ -129,7 +130,6 @@ exports.onlyAdmin = async (req, res, next) => {
 }
 
 const installColumn = async (columnName) => {
-  const db = database.lms;
 
   //alter permissions and roles to have permission as column with default false not null
   await db.query(`ALTER TABLE permissions ADD COLUMN ${columnName} BOOLEAN NOT NULL DEFAULT 0;`);
@@ -137,7 +137,6 @@ const installColumn = async (columnName) => {
 }
 
 exports.permissions = (...theArgs) => {
-  const db = database.lms;
 
   return async (req, res, next) => {
     try {

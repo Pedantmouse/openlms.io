@@ -24,6 +24,8 @@ const genericController = require('./controllers/GenericController');
 
 //Admin
 const adminUserController = require('./controllers/Admin/UserController');
+const adminPermissionsController = require('./controllers/Admin/PermissionsController');
+const adminRolesController = require('./controllers/Admin/RolesController');
 
 //Organization
 const courseController = require('./controllers/Organization/CourseController');
@@ -88,7 +90,21 @@ app.post('/api/v1/auth/reactivate', authController.reactivate);
 //////////////////////////////////////////////////////////////
 //get permissions to map for user and roles.
 
+//manager permissions.
+app.get('/api/v1/admin/permissions', authService.onlyAdmin, adminPermissionsController.getMany);
+app.delete('/api/v1/admin/permissions/:name', authService.onlyAdmin, adminPermissionsController.deleteOne);
+
 //manage roles
+app.get('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.getMany);
+app.post('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.createOne);
+app.put('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.updateMany);
+app.delete('/api/v1/admin/roles', authService.onlyAdmin, genericController.response405);
+
+app.get('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.getOne);
+app.post('/api/v1/admin/roles/:id', authService.onlyAdmin,genericController.response405);
+app.put('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.updateOne);
+app.delete('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.deleteOne);
+
 
 //manage users
 app.get('/api/v1/admin/users', authService.onlyAdmin, adminUserController.getUsers);
@@ -147,14 +163,6 @@ app.delete('/api/v1/organization/courses/:id', courseController.deleteCourse);
 //////////////////////////////////////////////////////////////
 // Courses Above
 // ===========================================================
-
-// app.get('/api/v1/users', auth, authController.getUsers);
-// app.put('/api/v1/users', auth, authController.updateUsers);
-
-// app.get('/api/v1/user/:id', auth, authController.getUser);
-// app.put('/api/v1/user/:id', auth, authController.updateUser);
-// app.delete('/api/v1/user/:id', auth, authController.disableUser);
-
 
 server.listen(process.env.PORT || '2017', () => {
   if (environment !== 'production' &&

@@ -5,5 +5,5 @@
     * [Notifications](api/permissions-and-roles.md)
     * [Profile](api/profile.md)
     * Admin
-        * [Manager Users](api/admin/manager-users.md)
         * [Permissions And Roles](api/admin/permissions-and-roles.md)
+        * [Manager Users](api/admin/manager-users.md)
