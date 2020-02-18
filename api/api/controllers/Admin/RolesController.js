@@ -12,10 +12,17 @@ exports.getMany = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const pageSize = parseInt(req.query.page) || 15;
-        const sortColumn = req.query.sortColumn || 'name';
-        const sortDirection = req.query.sortDirection || 'asc';
+        const sortColumn = req.query["sort-column"] || 'name';
+        const sortDirection = req.query["sort-direction"] || 'asc';
 
-        if (sortColumn) {
+        if (sortColumn !== 'name' && sortColumn !== 'is_deleted') {
+            if (!utils.StringValidation.isAlphaNumericWithUnderscore(sortColumn)) {
+                return res.status(400).json({
+                    "msg": "Bad Request: 'sortColumn' isn't a properly formated permission (Alphanumeric with underscore). Use link to find valid 'sortColumns'",
+                    "link": "/api/v1/admin/permissions"
+                });
+            }
+            
             const permissionsColumnNames = await db.query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'permissions'", { type: Sequelize.QueryTypes.SELECT });
             let doesPermissionExist = false;
             
@@ -34,8 +41,9 @@ exports.getMany = async (req, res) => {
             
             if (!doesPermissionExist) {
                 return res.status(400).json({
-                    "msg": "Bad Request: 'sortColumn' isn't a valid permissions",
-                    "humanMsg": "You are sorting by a permissions that doesn't exist."
+                    "msg": "Bad Request: 'sortColumn' isn't a valid permissions. Use link to find valid 'sortColumns'",
+                    "humanMsg": "You are sorting by a permissions that doesn't exist.",
+                    "link": "/api/v1/admin/permissions"
                 });
             }
         }

@@ -80,11 +80,79 @@ Service is down.
 
 ## Delete a Permission.
 
-> Get a list of current permissions that can be used for roles.
+> Delete a permission by name. Note: if the permission comes back, the permission is still in the code. The programmer has the final say of a permission existing.
 
 ```endpoint
-GET /api/v1/admin/roles
+DELETE /api/v1/admin/permissions/:name
 ```
+
+#### Additional Information
+* Admin Type Only
+* Token required in header "Authorization: Bearer {token}"
+* This is a hard delete. You cannot bring information back.
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| msg | string |  |
+
+
+```json
+{
+    "msg": "This permission was successfully deleted."
+}
+```
+
+<!-- tabs:end -->
+
+#### Failed
+
+<!-- tabs:start -->
+#### ** 400 **
+
+Bad Request: The name of the permission doesn't exist. The name should be case sensitive alphanumeric with an underscore allowed. 
+
+```json
+{
+    "msg": "Bad Request: Can not delete a permission that doesn't exist. Use the link to get a link to valid permission names.",
+    "link": "/api/v1/admin/permissions"
+}
+```
+
+
+#### ** 401 **
+
+Unauthorized
+
+```json
+{
+    "msg": "Unauthorized.",
+    "humanMsg": "You don't the necessary permission(s).",
+    "resolve": {
+        "role": "Admin"
+    }
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+<!-- tabs:end -->
+
+
 
 
 ## Get all Roles

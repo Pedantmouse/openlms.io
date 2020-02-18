@@ -4,6 +4,13 @@ exports.email = function(email) {
     return re.test(String(email).toLowerCase());
 }
 
+// https://stackoverflow.com/questions/4434076/best-way-to-alphanumeric-check-in-javascript
+exports.isAlphaNumericWithUnderscore = function(str) {
+    // var regExp = /^[A-Za-z0-9]+$/;
+    var re = /^[a-zA-Z0-9_]+$/;
+    return re.test(str);
+}
+
 // https://stackoverflow.com/questions/26246601/wildcard-string-comparison-in-javascript
 exports.wildTest = function(wildcard, str) {
     const re = new RegExp(`^${wildcard.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
