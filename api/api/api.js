@@ -97,24 +97,24 @@ app.delete('/api/v1/admin/permissions/:name', authService.onlyAdmin, adminPermis
 //manage roles
 app.get('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.getMany);
 app.post('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.createOne);
-app.put('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.updateMany);
+app.patch('/api/v1/admin/roles', authService.onlyAdmin, adminRolesController.updateMany);
 app.delete('/api/v1/admin/roles', authService.onlyAdmin, genericController.response405);
 
 app.get('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.getOne);
 app.post('/api/v1/admin/roles/:id', authService.onlyAdmin,genericController.response405);
-app.put('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.updateOne);
+app.patch('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.updateOne);
 app.delete('/api/v1/admin/roles/:id', authService.onlyAdmin, adminRolesController.deleteOne);
 
 
 //manage users
 app.get('/api/v1/admin/users', authService.onlyAdmin, adminUserController.getUsers);
 app.post('/api/v1/admin/users', authService.onlyAdmin, adminUserController.createUser);
-app.put('/api/v1/admin/users', authService.onlyAdmin, adminUserController.updateUsers);
+app.patch('/api/v1/admin/users', authService.onlyAdmin, adminUserController.updateUsers);
 app.delete('/api/v1/admin/users', authService.onlyAdmin, genericController.response405);
 
 app.get('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.getUser);
 app.post('/api/v1/admin/users/:id', authService.onlyAdmin,genericController.response405);
-app.put('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.updateUser);
+app.patch('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.updateUser);
 app.delete('/api/v1/admin/users/:id', authService.onlyAdmin, adminUserController.deleteUser);
 
 //manage user permissions: only get, post, or delete

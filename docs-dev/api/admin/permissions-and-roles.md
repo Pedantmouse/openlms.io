@@ -265,7 +265,7 @@ Service is down.
 
 
 
-## Post New User
+## Post New Role
 
 > Create a new user. Also has the option to email the user if mailinator environment variables are defined. 
 
@@ -345,6 +345,106 @@ Role name is already in use.
 {
     "msg": "Bad Request: role named 'test role' already assigned.",
     "humanMsg": "The name for this role is already in use."
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+<!-- tabs:end -->
+
+## Patch Many Roles
+
+> You can run a bulk patch on many roles, up to 50.  
+
+
+```endpoint
+PATCH /api/v1/admin/roles
+```
+
+#### Additional Information
+* Admin Type Only
+* Token required in header "Authorization: Bearer {token}"
+* Up to 50 updates at once can be performed.
+
+#### Body Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| roles | role[] | Required | List of role objects. |
+| roles[n].id | number | Required | Id of role |
+| roles[n].name | string | Optional | New name of role. |
+| roles[n].isDeleted | string | Optional | Deletes a role. |
+| roles[n]... permissions names | boolean | optional | List of permissions names. GET /api/v1/admin/permissions for list of permission names |
+
+#### Success
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+| Name | Type | Description |
+|---|---|---|
+| msg | string |  |
+
+```json
+{
+    "msg": "All roles have been successfully updated."
+}
+```
+
+<!-- tabs:end -->
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 400 **
+
+Bad request.
+* You may be using a permission that doesn't exist.
+* Too many updates
+* Id doesn't exist
+* etc...
+
+```json
+{
+    "msg": "Bad Request: Id '71' does not exist."
+}
+```
+
+#### ** 401 **
+
+Unauthorized
+
+```json
+{
+    "msg": "Unauthorized.",
+    "humanMsg": "You don't have the necessary permission(s).",
+    "resolve": {
+        "role": "Admin"
+    }
+}
+```
+
+#### ** 409 **
+
+Conflict
+Role name is already in use.
+
+```json
+{
+    "msg": "Bad Request: role named 'Awesome Dude' already assigned. Index '1' cannot use this name current."
 }
 ```
 
