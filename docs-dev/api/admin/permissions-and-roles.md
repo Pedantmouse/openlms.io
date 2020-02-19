@@ -226,7 +226,11 @@ One way to updated your database:
 Have you updated your database. Environment variable DB_MIGRATE=true, then reload npm start(or save a js file if using nodemon), then you make want to reset the environment file to DB_MIGRATE=false.
 
 ```json
-
+{
+    "msg": "Bad Request: 'sortColumn' isn't a valid permissions. Use link to find valid 'sortColumns'",
+    "humanMsg": "You are sorting by a permissions that doesn't exist.",
+    "link": "/api/v1/admin/permissions"
+}
 ```
 
 
@@ -259,7 +263,7 @@ Service is down.
 
 
 
-<!-- 
+
 
 ## Post New User
 
@@ -267,7 +271,7 @@ Service is down.
 
 
 ```endpoint
-POST /api/v1/admin/users
+POST /api/v1/admin/roles
 ```
 
 #### Additional Information
@@ -278,20 +282,12 @@ POST /api/v1/admin/users
 
 | Name | Type | Required/Optional | Description|
 |---|---|---|---|
-| email | string | Required | |
-| password | string | Required | |
-| firstName | string | Required | |
-| lastName | string | Required | |
-| username | string | Required | only lowercase, alpha-numeric |
-| phoneNumber | string | Optional | format: (###) ###-#### |
-| website | string | Optional | |
-| isAdmin | string | Optional | |
-| shouldSendEmail | boolean | Optional | Should the user be email with password |
-| Roles | number[] | Optional | Array of role ids |
+| name | string | Required | |
+| ...permissions names | boolean | optional | List of permissions names. GET /api/v1/admin/permissions for list of permission names |
 
 #### Success
 
-<!-- tabs:start 
+<!-- tabs:start -->
 
 #### ** 201 **
 
@@ -299,50 +295,30 @@ schema
 
 | Name | Type | Description |
 |---|---|---|
-| user | object | current user record with new user id. |
-| user.profile | object | current user profile record with new profile id. |
+| id | number | New role id.. |
 
 ```json
 {
-   "user": {
-        "isBanned": false,
-        "isDisabled": false,
-        "isDeleted": false,
-        "id": 6,
-        "email": "porky3@acme.com",
-        "isOrganizationMember": true,
-        "isAdmin": false,
-        "updatedAt": "2020-02-16T04:50:22.235Z",
-        "createdAt": "2020-02-16T04:50:22.235Z",
-        "profile": {
-            "id": 6,
-            "userId": 6,
-            "firstName": "Porky",
-            "lastName": "Pig",
-            "website": "http://porkypig.com",
-            "username": "pigman",
-            "updatedAt": "2020-02-16T04:50:22.763Z",
-            "createdAt": "2020-02-16T04:50:22.763Z"
-        }
-   }
+    "id": 21
 }
 ```
 
-<!-- tabs:end 
+<!-- tabs:end -->
 
 #### Failed
 
-<!-- tabs:start 
+<!-- tabs:start -->
 
 #### ** 400 **
 
 Bad request.
-You probably don't have all the required fields.
+You may be using a permission that doesn't exist.
 
 ```json
 {
-    "msg": "Bad Request: 'email' is required",
-    "humanMsg": "Please provide an email."
+    "msg": "Bad Request: 'test_permission' isn't a valid permission. Use link to find valid permissions",
+    "humanMsg": "You have assigned permission 'test_permission' to a role, but that permission doesn't exist.",
+    "link": "/api/v1/admin/permissions"
 }
 ```
 
@@ -353,7 +329,7 @@ Unauthorized
 ```json
 {
     "msg": "Unauthorized.",
-    "humanMsg": "You don't the necessary permission(s).",
+    "humanMsg": "You don't have the necessary permission(s).",
     "resolve": {
         "role": "Admin"
     }
@@ -363,12 +339,12 @@ Unauthorized
 #### ** 409 **
 
 Conflict
-Email is already in use.
+Role name is already in use.
 
 ```json
 {
-    "msg": "Conflict: User email already has existing email",
-    "humanMsg": "This email has already been register."
+    "msg": "Bad Request: role named 'test role' already assigned.",
+    "humanMsg": "The name for this role is already in use."
 }
 ```
 
@@ -383,7 +359,4 @@ Service is down.
 }
 ```
 
-<!-- tabs:end 
-
-
- -->
+<!-- tabs:end -->
