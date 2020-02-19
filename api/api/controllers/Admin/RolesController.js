@@ -208,7 +208,7 @@ exports.updateMany = async (req, res) => {
                         "msg": `Bad Request: '${prop}' isn't a valid permission on id '${roles[i].id}'. Use link to find valid permissions`,
                         "link": "/api/v1/admin/permissions"
                     });
-                } 
+                }
             }
         }
 
@@ -221,7 +221,7 @@ exports.updateMany = async (req, res) => {
                 if (prop === 'id') {
                     continue;
                 }
-                
+
                 updateColsSQL.push(`${prop} = ?`);
                 updateColsReplace.push(roles[i][prop]);
             }
@@ -245,7 +245,20 @@ exports.updateMany = async (req, res) => {
 //////////////////////////////////////////////////////////////
 
 exports.getOne = async (req, res) => {
+    try {
+        const role = (await db.query(`SELECT * FROM roles where id = :id`, { replacements: {id: req.params.id}, raw: true, type: Sequelize.QueryTypes.SELECT }))[0];
 
+        if (!role) {
+            res.status(404).json({
+                msg: "Not Found: No role with 'id'"
+            });
+        }
+
+        res.status(200).json(role);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: 'Internal server error' });
+    }
 }
 
 exports.updateOne = async (req, res) => {

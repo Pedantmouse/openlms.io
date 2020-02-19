@@ -460,3 +460,86 @@ Service is down.
 ```
 
 <!-- tabs:end -->
+
+## Get One Role
+
+> Get a role.
+
+```endpoint
+GET /api/v1/admin/roles/:id
+```
+
+#### Additional Information
+* Admin Type Only
+* Token required in header "Authorization: Bearer {token}"
+
+#### Url Params
+
+| Name | Type | Required/Optional | Description|
+|---|---|---|---|
+| id | number | Required | Id of the role  |
+
+#### Success
+
+<!-- tabs:start -->
+
+#### ** 200 **
+
+schema
+
+```json
+{
+    "id": 2,
+    "name": "Exec Management",
+    "permission1": 1,
+    "permission2": 1,
+    "permission3": 1
+}
+```
+
+<!-- tabs:end -->
+
+#### Failed
+
+<!-- tabs:start -->
+
+#### ** 401 **
+
+Unauthorized
+
+```json
+{
+    "msg": "Unauthorized.",
+    "humanMsg": "You don't the necessary permission(s).",
+    "resolve": {
+        "role": "Admin"
+    }
+}
+```
+
+#### ** 404 **
+
+Id doesn't have value. The record could have been deleted and need to be updated in the database manually.
+
+```json
+{
+    "msg": "Not Found: No role with 'id'"
+}
+```
+
+#### ** 500 **
+
+Internal Server Error:
+Service is down.
+
+```json
+{
+    "msg": "Internal server error"
+}
+```
+
+<!-- tabs:end -->
+
+
+
+
